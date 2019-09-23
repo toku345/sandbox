@@ -5,8 +5,8 @@
     <img id="frame">
 
     <script>
-      var camera = document.getElementById('camera');
-      var frame = document.getElementById('frame');
+      let camera = document.querySelector('#camera');
+      let frame = document.querySelector('#frame');
 
       camera.addEventListener('change', function(e) {
         var file = e.target.files[0];
