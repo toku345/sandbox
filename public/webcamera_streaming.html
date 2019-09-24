@@ -1,21 +1,40 @@
-<html>
+<!doctype html>
+<html lang="ja">
   <head>
+    <meta charset="utf-8">
+    <title>Web camera (front) streaming sample</title>
+    <meta name="description" content="Web camera (front) streaming sample">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
+      body {
+        margin: 0;
+      }
+
       #videoElement {
-        width: 640px;
-        height: 480px;
-        background-color: #666;
+        width: 100%;
+        display: block;
       }
     </style>
   </head>
+
   <body>
-    <video autoplay="true" id="videoElement"></video>
+    <video id="videoElement" autoplay></video>
     <script>
-      if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function (stream) {
-          document.querySelector("#videoElement").srcObject = stream;
-        });
-      }
+      let player = document.querySelector("#videoElement");
+      let constrains = { audio: false, video: true };
+
+      let handleSuccess = (stream) => {
+        player.srcObject = stream;
+      };
+
+      let handleError = (error) => {
+        alert(error);
+      };
+
+      navigator.mediaDevices.getUserMedia(constrains)
+               .then(handleSuccess)
+               .catch(handleError);
     </script>
   </body>
 </html>
