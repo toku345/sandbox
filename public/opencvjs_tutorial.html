@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OpenCV.js sample</title>
+    <meta name="description" content="toku345's sandbox">
+  </head>
+
+  <body>
+    <div>
+      <h1>OpenCV.js サンプル</h1>
+      <a href="https://docs.opencv.org/4.1.1/d0/d84/tutorial_js_usage.html">本家サンプル</a>を激しく参照してます。
+      <p id="status">OpenCV.js ロード中...</p>
+      <div>
+        <div class="inputout">
+          <img id="inputSrc" />
+          <div class="caption">
+            imageSrc: <input type="file" id="fileInput" name="inputFile" />
+          </div>
+        </div>
+        <div class="inputout">
+          <canvas id="canvasOutput"></canvas>
+          <div class="caption">CanvasOutput</div>
+        </div>
+      </div>
+      <script>
+        let imgElement = document.querySelector("#inputSrc");
+        let inputElement = document.querySelector("#fileInput");
+
+        inputElement.addEventListener('change', (e) => {
+          imgElement.src = URL.createObjectURL(e.target.files[0]);
+        });
+
+        imgElement.onload = () => {
+          let mat = cv.imread(imgElement);
+          cv.imshow('canvasOutput', mat);
+          mat.delete();
+        }
+
+        function onOpenCvReady() {
+          document.querySelector("#status").innerHTML = "OpenCV.js ロード完了!";
+        }
+      </script>
+      <script async src="https://docs.opencv.org/4.1.0/opencv.js" onload="onOpenCvReady()"></script>
+  </body>
+</html>
