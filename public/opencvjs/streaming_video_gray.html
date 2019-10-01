@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>OpenCV.js sample</title>
+    <meta name="description" content="toku345's sandbox">
+
+    <style>
+      #videoElement {
+        /* width: 320px;
+           height: 240px; */
+        display: block;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div>
+      <h1>OpenCV.js: 動画をグレースケールに変換</h1>
+      <a href="https://docs.opencv.org/4.1.1/dd/d00/tutorial_js_video_display.html">本家サンプル</a>を激しく参照してます。
+      <p id="status">OpenCV.js ロード中...</p>
+      <div>
+        <div class="inputout">
+          <button id="startstop">start</button>
+          <video id="videoElement" playsinline width="320" height="240"></video>
+        </div>
+        <div class="inputout">
+          <div class="caption">CanvasOutput</div>
+          <canvas id="canvasOutput"></canvas>
+        </div>
+      </div>
+      <script async src="https://docs.opencv.org/4.1.1/opencv.js" id="opencvjs"></script>
+      <script>
+        let video = document.querySelector("#videoElement");
+        let startstopButton = document.querySelector("#startstop");
+        let streaming = false;
+
+        function startTakeingVideo() {
+          // 録画はしてないよ
+          let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+          let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+          let cap = new cv.VideoCapture(video);
+
+          const FPS = 30;
+
+          function processVideo() {
+            try {
+              if (!streaming) {
+                src.delete();
+                dst.delete();
+                return;
+              }
+
+              let begin = Date.now();
+
+              // start processing
+              cap.read(src);
+              cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+              cv.imshow("canvasOutput", dst);
+
+              // schedule the next one
+              let delay = 1000/FPS - (Date.now() - begin);
+              setTimeout(processVideo, delay);
+            } catch (error) {
+              alert(error);
+            }
+          }
+
+          // schedule the firest one
+          setTimeout(processVideo, 0);
+        }
+
+        document.querySelector("#opencvjs").addEventListener("load", () => {
+          document.querySelector("#status").innerHTML = "OpenCV.js ロード完了!";
+        });
+
+        startstopButton.addEventListener("click", () => {
+          if (! streaming) {
+            streaming = true;
+
+            navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+                     .then(stream => {
+                       video.srcObject = stream;
+                       video.play();
+                     })
+                     .catch(error => {
+                       alert(error);
+                     });
+
+            startTakeingVideo();
+            startstopButton.textContent = "stop";
+          } else {
+            streaming = false;
+            video.pause();
+            startstopButton.textContent = "start";
+          }
+        });
+      </script>
+  </body>
+</html>
