@@ -66,20 +66,16 @@
           );
 
           var mat = new BABYLON.StandardMaterial("mat", scene);
-          // var texture = new BABYLON.Texture("https://i.imgur.com/lXehwjZ.jpg", scene);
-          // mat.diffuseTexture = texture;
 
           var videoTexture = new BABYLON.VideoTexture(
             "video",
             ["textures/sample.mp4"],
             scene,
-            true,
             true
           );
           mat.diffuseTexture = videoTexture;
           videoTexture.video.play();
 
-          // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 5.0 }, scene);
           var box = BABYLON.MeshBuilder.CreateBox(
             "box",
             { height: 2.8, width: 5, depth: 0.1 },
